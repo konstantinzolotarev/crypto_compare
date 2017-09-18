@@ -250,4 +250,33 @@ defmodule CryptoCompare do
   def generate_avg(fsym, tsym, markets, params) when is_list(markets), do: generate_avg(fsym, tsym, Enum.join(markets, ","), params)
 
   def generate_avg(fsym, tsym, markets, params), do: ApiMini.get_body("generateAvg", [fsym: fsym, tsym: tsym, markets: markets] ++ params)
+
+
+  @doc """
+  Get day average price. 
+  The values are based on hourly vwap data and the average can be calculated in different waysIt uses BTC conversion 
+  if data is not available because the coin is not trading in the specified currency. 
+  If tryConversion is set to false it will give you the direct data. If no toTS is given it will automatically do the current day. 
+  Also for different timezones use the UTCHourDiff paramThe calculation types are: 
+  HourVWAP - a VWAP of the hourly close price,
+  MidHighLow - the average between the 24 H high and low.
+  VolFVolT - the total volume from / the total volume to (only avilable with tryConversion set to false so only for direct trades but the value should be the most accurate price)
+
+  Optional parameters: 
+   - `e` - String. Name of exchange. Default: CCCAGG
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+   - `avgType` - String. Default: `HourVWAP`
+   - `UTCHourDiff` - int. Default: `0`
+   - `toTs` - timestamp. Hour unit
+
+   ## Example
+
+   ```elixir
+
+   ```
+  """
+  @spec day_avg(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
+  def day_avg(fsym, tsym, params \\ []), do: ApiMini.get_body("dayAvg", [fsym: fsym, tsym: tsym] ++ params)
 end
