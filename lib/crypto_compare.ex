@@ -87,11 +87,9 @@ defmodule CryptoCompare do
   @spec price(String.t, String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params \\ [])
   
-  @doc false
   @spec price(String.t, [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params) when is_list(tsyms), do: price(fsym, Enum.join(tsyms, ","), params)
 
-  @doc false
   @spec price(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params), do: ApiMini.get_body("price", [fsym: fsym, tsyms: tsyms] ++ params)
 
@@ -115,13 +113,10 @@ defmodule CryptoCompare do
   @spec pricemulti(String.t | [String.t], String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def pricemulti(fsyms, tsyms, params \\ [])
 
-  @doc false
   def pricemulti(fsyms, tsyms, params) when is_list(fsyms), do: pricemulti(Enum.join(fsyms, ","), tsyms, params)
 
-  @doc false
   def pricemulti(fsyms, tsyms, params) when is_list(tsyms), do: pricemulti(fsyms, Enum.join(tsyms, ","), params)
  
-  @doc false
   def pricemulti(fsyms, tsyms, params), do: ApiMini.get_body("pricemulti", [fsyms: fsyms, tsyms: tsyms] ++ params)
 
 
@@ -212,12 +207,47 @@ defmodule CryptoCompare do
   @spec pricemultifull(String.t | [String.t], String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def pricemultifull(fsyms, tsyms, params \\ [])
 
-  @doc false
   def pricemultifull(fsyms, tsyms, params) when is_list(fsyms), do: pricemultifull(Enum.join(fsyms, ","), tsyms, params)
 
-  @doc false
   def pricemultifull(fsyms, tsyms, params) when is_list(tsyms), do: pricemultifull(fsyms, Enum.join(tsyms, ","), params)
 
-  @doc false
   def pricemultifull(fsyms, tsyms, params), do: ApiMini.get_body("pricemultifull", [fsyms: fsyms, tsyms: tsyms] ++ params)
+
+
+  @doc """
+  Compute the current trading info (price, vol, open, high, low etc) of the requested pair as a volume weighted average based on the markets requested.
+
+  Optional parameters:
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+
+  Example: 
+
+  ```elixir
+  iex(2)> CryptoCompare.generate_avg("BTC", "USD", ["Coinbase", "Bitfinex"])
+  {:ok,
+    %{
+      DISPLAY: %{CHANGE24HOUR: "$ 425", CHANGEPCT24HOUR: "11.53", FROMSYMBOL: "Ƀ",
+        HIGH24HOUR: "$ 4,130", LASTMARKET: "Coinbase", LASTTRADEID: 21066901,
+        LASTUPDATE: "Just now", LASTVOLUME: "Ƀ 3.16", LASTVOLUMETO: "$ 12,981.3",
+        LOW24HOUR: "$ 3,678", MARKET: "CUSTOMAGG", OPEN24HOUR: "$ 3,685",
+        PRICE: "$ 4,110", TOSYMBOL: "$", VOLUME24HOUR: "Ƀ 14,474.5",
+        VOLUME24HOURTO: "$ 56,142,934.5"},
+      RAW: %{CHANGE24HOUR: 425, CHANGEPCT24HOUR: 11.533242876526458, FLAGS: 0,
+        FROMSYMBOL: "BTC", HIGH24HOUR: 4130, LASTMARKET: "Coinbase",
+        LASTTRADEID: 21066901, LASTUPDATE: 1505744225, LASTVOLUME: 3.15847893,
+        LASTVOLUMETO: 12981.348402299998, LOW24HOUR: 3678, MARKET: "CUSTOMAGG",
+        OPEN24HOUR: 3685, PRICE: 4110, TOSYMBOL: "USD",
+        VOLUME24HOUR: 14474.464341350002, VOLUME24HOURTO: 56142934.480225}
+    }
+  }
+  ```
+  """
+  @spec generate_avg(String.t, String.t, String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
+  def generate_avg(fsym, tsym, markets, params \\ [])
+
+  def generate_avg(fsym, tsym, markets, params) when is_list(markets), do: generate_avg(fsym, tsym, Enum.join(markets, ","), params)
+
+  def generate_avg(fsym, tsym, markets, params), do: ApiMini.get_body("generateAvg", [fsym: fsym, tsym: tsym, markets: markets] ++ params)
 end
