@@ -3,7 +3,7 @@ defmodule CryptoCompare.Util.ApiMini do
 
   use HTTPoison.Base
 
-  @host "https://min-api.cryptocompare.com/"
+  @host "https://min-api.cryptocompare.com/data/"
   @timeout Application.get_env(:crypto_compare, :request_timeout, 8000)
 
   def host, do: @host
@@ -22,10 +22,28 @@ defmodule CryptoCompare.Util.ApiMini do
     |> Poison.decode!(keys: :atoms)
   end
 
-  def get_body(url), do: get(url) 
-  def get_body(url, pid), do: get(url, %{}, stream_to: pid)
+  @doc """
+  Fetch only actual data from request
+  """
+  @spec get_body(String.t) :: {:ok, any} | {:error, any}
+  def get_body(url), do: get(url) |> fetch_body() |> pick_data()
+
+  @doc """
+  Fetch only actual body from request with specified params
+  """
+  @spec get_body(String.t, [tuple]) :: {:ok, any} | {:error, any}
+  def get_body(url, params), do: get(url, %{}, params: params) |> fetch_body() |> pick_data()
 
   def post_body(url, params, headers) do
     post(url, params, headers)
   end
+
+
+  defp fetch_body({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: {:ok, body}
+  defp fetch_body({:ok, %HTTPoison.Response{status_code: 201, body: body}}), do: {:ok, body}
+  defp fetch_body({:error, err}), do: {:error, err}
+  defp fetch_body(_), do: {:error, "Something wrong !"}
+
+  defp pick_data({:ok, %{Response: "Error"} = data}), do: {:error, data}
+  defp pick_data(resp), do: resp
 end

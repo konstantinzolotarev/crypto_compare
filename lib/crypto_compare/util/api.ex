@@ -3,7 +3,7 @@ defmodule CryptoCompare.Util.Api do
 
   use HTTPoison.Base
 
-  @host "https://www.cryptocompare.com/api/"
+  @host "https://www.cryptocompare.com/api/data/"
   @timeout Application.get_env(:crypto_compare, :request_timeout, 8000)
 
   def host, do: @host
