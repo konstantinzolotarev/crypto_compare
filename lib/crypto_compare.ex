@@ -279,4 +279,33 @@ defmodule CryptoCompare do
   """
   @spec day_avg(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
   def day_avg(fsym, tsym, params \\ []), do: ApiMini.get_body("dayAvg", [fsym: fsym, tsym: tsym] ++ params)
+
+  
+  @doc """
+  Get the price of any cryptocurrency in any other currency that you need at a given timestamp.
+  The price comes from the daily info - so it would be the price at the end of the day GMT based on the requested TS. 
+  If the crypto does not trade directly into the toSymbol requested, BTC will be used for conversion. 
+  Tries to get direct trading pair data, if there is none or it is more than 30 days before the ts requested, it uses BTC conversion. 
+  If the opposite pair trades we invert it (eg.: BTC-XMR)
+
+  Optional parameters: 
+   - `ts` - Timestamp. 
+   - `markets` - String. Name of exchanges, include multiple Default: `CCAGG`
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+    
+  ## Example:
+
+  ```elixir
+  iex(3)> CryptoCompare.price_historical("ETH", ["BTC"])
+  {:ok, %{ETH: %{BTC: 0.0725}}}
+  ```
+  """
+  @spec price_historical(String.t, String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
+  def price_historical(fsym, tsyms, params \\ [])
+  def price_historical(fsym, tsyms, params) when is_list(tsyms), do: price_historical(fsym, Enum.join(tsyms, ","), params)
+  def price_historical(fsym, tsyms, params), do: ApiMini.get_body("pricehistorical", [fsym: fsym, tsyms: tsyms] ++ params)
+
+
 end
