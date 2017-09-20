@@ -308,4 +308,76 @@ defmodule CryptoCompare do
   def price_historical(fsym, tsyms, params), do: ApiMini.get_body("pricehistorical", [fsym: fsym, tsyms: tsyms] ++ params)
 
 
+  @doc """
+  Get data for a currency pair. 
+  It returns general block explorer information, aggregated data and individual data for each exchange available.
+
+  This api is getting abused and will be moved to a min-api path in the near future. Please try not to use it.
+
+  ## Example:
+  ```elixir
+  iex(2)> CryptoCompare.coin_snapshot("BTC", "USD")
+  {:ok,
+    %{AggregatedData: %{FLAGS: "4", FROMSYMBOL: "BTC", HIGH24HOUR: "4051.38",
+      LASTMARKET: "Coinbase", LASTTRADEID: "21143529", LASTUPDATE: "1505915744",
+      LASTVOLUME: "0.00025062", LASTVOLUMETO: "0.9974676", LOW24HOUR: "3839.51",
+      MARKET: "CCCAGG", OPEN24HOUR: "3961.07", PRICE: "3980.47", TOSYMBOL: "USD",
+      TYPE: "5", VOLUME24HOUR: "92013.70078287183",
+      VOLUME24HOURTO: "362226520.4356543"}, Algorithm: "SHA256",
+      BlockNumber: 486154, BlockReward: 12.5,
+      Exchanges: [
+        %{FLAGS: "4", FROMSYMBOL: "BTC", HIGH24HOUR: "4049",
+          LASTTRADEID: "21143529", LASTUPDATE: "1505915744",
+          LASTVOLUME: "0.00025062", LASTVOLUMETO: "0.9974676", LOW24HOUR: "3850.01",
+          MARKET: "Coinbase", OPEN24HOUR: "3960.09", PRICE: "3980", TOSYMBOL: "USD",
+          TYPE: "2", VOLUME24HOUR: "10388.061612519965",
+          VOLUME24HOURTO: "40860804.10243919"},
+        %{FLAGS: "4", FROMSYMBOL: "BTC", HIGH24HOUR: "4190", LASTTRADEID: "3274802",
+          LASTUPDATE: "1505915715", LASTVOLUME: "0.05115365",
+          LASTVOLUMETO: "209.72996500000002", LOW24HOUR: "4005", MARKET: "Cexio",
+          OPEN24HOUR: "4115.2", ...}
+      ], NetHashesPerSecond: 7898572058.405353,
+      ProofType: "PoW", TotalCoinsMined: 1.65769e7}}
+  ```
+  """
+  @spec coin_snapshot(String.t, String.t) :: {:ok, map} | {:error, any}
+  def coin_snapshot(fsym, tsym), do: Api.get_body("coinsnapshot", [fsym: fsym, tsym: tsym])
+
+  @doc """
+  Get the general, subs (used to connect to the streamer and to figure 
+  out what exchanges we have data for and what are the exact coin pairs of the coin) 
+  and the aggregated prices for all pairs available.
+
+  ## Example:
+
+  ```elixir
+  iex(4)> CryptoCompare.coin_snapshot_full_by_id(1182)
+  {:ok,
+    %{General: %{AffiliateUrl: "https://bitcoin.org/en/", Algorithm: "SHA256",
+      BaseAngularUrl: "/coins/btc/", BlockNumber: 486154, BlockReward: 12.5,
+      BlockRewardReduction: "50%", BlockTime: 600, DangerTop: "",
+      Description: "something", DifficultyAdjustment: "2016 blocks", DocumentType: "Webpagecoinp",
+      Features: "something", H1Text: "Bitcoin (BTC)", Id: "1182", ImageUrl: "/media/19633/btc.png",
+      InfoTop: "", LastBlockExplorerUpdateTS: 1505915570, Name: "Bitcoin",
+      NetHashesPerSecond: 7898572058.405353, PreviousTotalCoinsMined: 0.0,
+      ProofType: "PoW",
+      Sponsor: %{ImageUrl: "/media/11417633/utrust_sponsor.png",
+        Link: "https://utrust.io", TextTop: "Sponsored by"},
+      StartDate: "03/01/2009", Symbol: "BTC",
+      Technology: "something", TotalCoinSupply: "21000000", TotalCoinsMined: 1.65769e7,
+      Twitter: "@bitcoin", Url: "/coins/btc/", WarningTop: "",
+      Website: "<a href='https://bitcoin.org/en/' target='_blank'>Bitcoin</a>"},
+      ICO: %{Status: "N/A", WhitePaper: "-"},
+      SEO: %{BaseImageUrl: "https://www.cryptocompare.com",
+        BaseUrl: "https://www.cryptocompare.com", OgImageHeight: "300",
+        OgImageUrl: "/media/19633/btc.png", OgImageWidth: "300",
+        PageDescription: "Live Bitcoin prices from all markets and BTC coin market Capitalization. Stay up to date with the latest Bitcoin price movements and forum discussion. Check out our snapshot charts and see when there is an opportunity to buy or sell Bitcoin.",
+                                                                                                                        PageTitle: "Bitcoin (BTC) - Live Bitcoin price and market cap"},
+        StreamerDataRaw: [...],
+        Subs: ["2~BTCE~BTC~CNH", "2~LocalBitcoins~BTC~GEL", ...]}}
+  ```
+  """
+  @spec coin_snapshot_full_by_id(integer | String.t) :: {:ok, map} | {:error, any}
+  def coin_snapshot_full_by_id(id), do: Api.get_body("coinsnapshotfullbyid", [id: id])
+
 end

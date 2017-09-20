@@ -22,8 +22,17 @@ defmodule CryptoCompare.Util.Api do
     |> Poison.decode!(keys: :atoms)
   end
 
+  @doc """
+  Fetch only actual data from request
+  """
+  @spec get_body(String.t) :: {:ok, any} | {:error, any}
   def get_body(url), do: get(url) |> fetch_body() |> pick_data()
-  def get_body(url, pid), do: get(url, %{}, stream_to: pid)
+
+  @doc """
+  Fetch only actual body from request with specified params
+  """
+  @spec get_body(String.t, [tuple]) :: {:ok, any} | {:error, any}
+  def get_body(url, params), do: get(url, %{}, params: params) |> fetch_body() |> pick_data()
 
   def post_body(url, params, headers) do
     post(url, params, headers)
