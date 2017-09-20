@@ -380,4 +380,97 @@ defmodule CryptoCompare do
   @spec coin_snapshot_full_by_id(integer | String.t) :: {:ok, map} | {:error, any}
   def coin_snapshot_full_by_id(id), do: Api.get_body("coinsnapshotfullbyid", [id: id])
 
+  @doc """
+  Used to get all the mining equipment available on the website. It returns an array of mining equipment objects
+
+  ## Example:
+
+  ```elixir
+  iex(1)> CryptoCompare.mining_equipment
+  {:ok,
+    %{CoinData: %{BTC: %{BlockNumber: 486156, BlockReward: 12.5,
+      BlockRewardReduction: "50%", BlockTime: 600,
+      DifficultyAdjustment: "2016 blocks",
+      NetHashesPerSecond: 7898572058.405353, PreviousTotalCoinsMined: 0.0,
+      PriceUSD: 4034.81, Symbol: "BTC", TotalCoinsMined: 16576950.0},
+      DASH: %{BlockNumber: 740410, BlockReward: 3.6029519103467464,
+        BlockRewardReduction: "50%", BlockTime: 37, DifficultyAdjustment: "DGW",
+        NetHashesPerSecond: 229045990915876.0,
+        PreviousTotalCoinsMined: 7570895.96624418, PriceUSD: 342.84,
+        Symbol: "DASH", TotalCoinsMined: 7570899.56919609},
+      Message: "Mining contracts data successfully returned",
+      MiningData: %{"35580": %{AffiliateURL: "https://mineshop.eu/monero-xmr-miners/monero-miner-gpu-mining-detail",
+        Algorithm: "CryptoNight", Company: "MineShop", Cost: "2142.90",
+        CurrenciesAvailable: "XMR",
+        CurrenciesAvailableLogo: "/media/19969/xmr.png",
+        CurrenciesAvailableName: "Monero", Currency: "USD", EquipmentType: "Rig",
+        HashesPerSecond: "3200", Id: "35580",
+        LogoUrl: "/media/352238/eth_rig_125.png",
+        Name: "Monero Mining Rig 3200 H/s", ParentId: "35553",
+        PowerConsumption: "800", Recommended: false, Sponsored: false,
+        Url: "/mining/mineshop/monero-mining-rig-3200hs/"},
+        "2476": %{...}, ...}, Response: "Success", Type: 100}}
+  ```
+  """
+  @spec mining_equipment() :: {:ok, map} | {:error, any}
+  def mining_equipment, do: Api.get_body("miningequipment")
+
+  @doc """
+  Returns all the mining contracts in a JSON array.
+
+  ## Example:
+
+  ```elixir
+  iex(3)> CryptoCompare.mining_contracts
+  {:ok,
+    %{CoinData: %{BCH: %{BlockNumber: 0, BlockReward: 0.0,
+      BlockRewardReduction: nil, BlockTime: 600, DifficultyAdjustment: nil,
+      NetHashesPerSecond: 0.0, PreviousTotalCoinsMined: 0.0, PriceUSD: 507.16,
+      Symbol: "BCH", TotalCoinsMined: 16598463.0},
+      BTC: %{BlockNumber: 486156, BlockReward: 12.5, BlockRewardReduction: "50%",
+        BlockTime: 600, DifficultyAdjustment: "2016 blocks",
+        NetHashesPerSecond: 7898572058.405353, PreviousTotalCoinsMined: 0.0,
+        PriceUSD: 4036.23, Symbol: "BTC", TotalCoinsMined: 16576950.0},
+      DASH: %{BlockNumber: 740410, BlockReward: 3.6029519103467464,
+        BlockRewardReduction: "50%", BlockTime: 37, DifficultyAdjustment: "DGW",
+        NetHashesPerSecond: 229045990915876.0,
+        PreviousTotalCoinsMined: 7570895.96624418, PriceUSD: 342.99,
+        Symbol: "DASH", TotalCoinsMined: 7570899.56919609},
+      ETH: %{BlockNumber: 4294988, BlockReward: 5.0, BlockRewardReduction: "",
+        BlockTime: 19, DifficultyAdjustment: "Per 1 Block",
+        NetHashesPerSecond: 104406325175528.05, PreviousTotalCoinsMined: 0.0,
+        PriceUSD: 292.86, Symbol: "ETH", TotalCoinsMined: 94731137.8428},
+      LTC: %{BlockNumber: 1280725, BlockReward: 25.0,
+        BlockRewardReduction: "50%", BlockTime: 150,
+        DifficultyAdjustment: "2016 blocks",
+        NetHashesPerSecond: 23936316649465.7,
+        PreviousTotalCoinsMined: 53016132.3718871, PriceUSD: 54.13,
+        Symbol: "LTC", TotalCoinsMined: 53016232.37188706},
+      XMR: %{BlockNumber: 1402642, BlockReward: 6.819603784146,
+        BlockRewardReduction: "-", BlockTime: 120,
+        DifficultyAdjustment: "2 blocks", NetHashesPerSecond: 241354987.75833,
+        PreviousTotalCoinsMined: 0.0, PriceUSD: 97.87, Symbol: "XMR",
+        TotalCoinsMined: 15104905.567139952},
+      ZEC: %{BlockNumber: 187966, BlockReward: 10.0, BlockRewardReduction: nil,
+        BlockTime: 150, DifficultyAdjustment: nil,
+        NetHashesPerSecond: 283238210.0, PreviousTotalCoinsMined: 0.0,
+        PriceUSD: 193.75, Symbol: "ZEC", TotalCoinsMined: 2224581.25}},
+        Message: "Mining contracts data successfully returned",
+        MiningData: %{"25743": %{AffiliateURL: "http://bit.ly/2tudp6y",
+          Algorithm: "X11", Company: "HashCoins", ContractLength: "360",
+          Cost: "32", CurrenciesAvailable: "DASH",
+          CurrenciesAvailableLogo: "/media/20626/dash.png",
+          CurrenciesAvailableName: "DigitalCash", Currency: "USD",
+          FeePercentage: "0", FeeValue: "0", FeeValueCurrency: "USD",
+          HashesPerSecond: "10000000", Id: "25743",
+          LogoUrl: "/media/350644/hashflare.png",
+          Name: "Mining Contract Dash Small", ParentId: "2363", Recommended: false,
+          Sponsored: false, Url: "/mining/hashcoins/mining-contract-x11-small/"},
+          "25745": %{AffiliateURL: "http://bit.ly/2tudp6y", ...}, "15709": %{...},
+          ...}, Response: "Success", Type: 100}}
+  ```
+  """
+  @spec mining_contracts() :: {:ok, map} | {:error, any}
+  def mining_contracts, do: Api.get_body("miningcontracts")
+
 end
