@@ -34,10 +34,6 @@ defmodule CryptoCompare.Util.Api do
   @spec get_body(String.t, [tuple]) :: {:ok, any} | {:error, any}
   def get_body(url, params), do: get(url, %{}, params: params) |> fetch_body() |> pick_data()
 
-  def post_body(url, params, headers) do
-    post(url, params, headers)
-  end
-
   defp fetch_body({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: {:ok, body}
   defp fetch_body({:ok, %HTTPoison.Response{status_code: 201, body: body}}), do: {:ok, body}
   defp fetch_body({:error, err}), do: {:error, err}
