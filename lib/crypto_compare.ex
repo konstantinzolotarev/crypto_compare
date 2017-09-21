@@ -8,7 +8,7 @@ defmodule CryptoCompare do
 
   [API Documentation](https://www.cryptocompare.com/api/#-api-data-)
 
-  ## Example: 
+  ## Example:
 
   ```elixir
   iex(1)> CryptoCompare.coin_list
@@ -29,7 +29,7 @@ defmodule CryptoCompare do
   @doc """
   Get general info for all the coins available on the website.
 
-  ## Example: 
+  ## Example:
 
   ```elixir
   iex(1)> CryptoCompare.coin_list
@@ -51,33 +51,33 @@ defmodule CryptoCompare do
   @doc """
   Get the latest price for a list of one or more currencies. Really fast, 20-60 ms. Cached each 10 seconds.
 
-  ## Example: 
-  
+  ## Example:
+
   ```elixir
   iex(1)> CryptoCompare.price("ETH", "BTC")
   {:ok, %{BTC: 0.07356}}
   ```
   """
-  @spec price(String.t, [String.t]) :: {:ok, map} | {:error, any}
+  @spec price(String.t, String.t | [String.t]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms) when is_list(tsyms), do: price(fsym, Enum.join(tsyms, ","))
 
   @doc """
   Get the latest price for a list of one or more currencies. Really fast, 20-60 ms. Cached each 10 seconds.
-  
+
   **Optional parameters:**
    - `e` - String. Name of exchange. Default: CCCAGG
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
-  
-   ## Example: 
+
+  ## Example:
 
   ```elixir
   iex(1)> CryptoCompare.price("ETH", ["BTC", "LTC"])
   {:ok, %{BTC: 0.07357, LTC: 5.3}}
   ```
 
-  With specified exchange: 
+  With specified exchange:
 
   ```elixir
   iex(1)> CryptoCompare.price("ETH", ["USD", "EUR"], [e: "Coinbase"])
@@ -91,11 +91,7 @@ defmodule CryptoCompare do
   """
   @spec price(String.t, String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params \\ [])
-  
-  @spec price(String.t, [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params) when is_list(tsyms), do: price(fsym, Enum.join(tsyms, ","), params)
-
-  @spec price(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
   def price(fsym, tsyms, params), do: ApiMini.get_body("price", [fsym: fsym, tsyms: tsyms] ++ params)
 
 
@@ -108,7 +104,7 @@ defmodule CryptoCompare do
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-  ## Example: 
+  ## Example:
 
   ```elixir
   iex(1)> CryptoCompare.pricemulti(["ETH", "DASH"], ["BTC", "USD"])
@@ -117,18 +113,15 @@ defmodule CryptoCompare do
   """
   @spec pricemulti(String.t | [String.t], String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def pricemulti(fsyms, tsyms, params \\ [])
-
   def pricemulti(fsyms, tsyms, params) when is_list(fsyms), do: pricemulti(Enum.join(fsyms, ","), tsyms, params)
-
   def pricemulti(fsyms, tsyms, params) when is_list(tsyms), do: pricemulti(fsyms, Enum.join(tsyms, ","), params)
- 
   def pricemulti(fsyms, tsyms, params), do: ApiMini.get_body("pricemulti", [fsyms: fsyms, tsyms: tsyms] ++ params)
 
 
   @doc """
   Get all the current trading info (price, vol, open, high, low etc) of any list of cryptocurrencies
-  in any other currency that you need.If the crypto does not trade directly into the toSymbol requested, 
-  BTC will be used for conversion. This API also returns Display values for all the fields. 
+  in any other currency that you need.If the crypto does not trade directly into the toSymbol requested,
+  BTC will be used for conversion. This API also returns Display values for all the fields.
   If the opposite pair trades we invert it (eg.: BTC-XMR).
 
   **Optional parameters:**
@@ -137,7 +130,7 @@ defmodule CryptoCompare do
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-   ## Example: 
+  ## Example:
 
   ```elixir
   iex(16)> CryptoCompare.pricemultifull(["ETH", "DASH"], ["BTC", "USD"], [extraParams: "my app"])
@@ -211,11 +204,8 @@ defmodule CryptoCompare do
   """
   @spec pricemultifull(String.t | [String.t], String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def pricemultifull(fsyms, tsyms, params \\ [])
-
   def pricemultifull(fsyms, tsyms, params) when is_list(fsyms), do: pricemultifull(Enum.join(fsyms, ","), tsyms, params)
-
   def pricemultifull(fsyms, tsyms, params) when is_list(tsyms), do: pricemultifull(fsyms, Enum.join(tsyms, ","), params)
-
   def pricemultifull(fsyms, tsyms, params), do: ApiMini.get_body("pricemultifull", [fsyms: fsyms, tsyms: tsyms] ++ params)
 
 
@@ -227,10 +217,10 @@ defmodule CryptoCompare do
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-   ## Example: 
+  ## Example:
 
   ```elixir
-  iex(2)> CryptoCompare.generate_avg("BTC", "USD", ["Coinbase", "Bitfinex"])
+  iex(1)> CryptoCompare.generate_avg("BTC", "USD", ["Coinbase", "Bitfinex"])
   {:ok,
     %{
       DISPLAY: %{CHANGE24HOUR: "$ 425", CHANGEPCT24HOUR: "11.53", FROMSYMBOL: "Ƀ",
@@ -251,18 +241,16 @@ defmodule CryptoCompare do
   """
   @spec generate_avg(String.t, String.t, String.t | [String.t], [tuple]) :: {:ok, map} | {:error, any}
   def generate_avg(fsym, tsym, markets, params \\ [])
-
   def generate_avg(fsym, tsym, markets, params) when is_list(markets), do: generate_avg(fsym, tsym, Enum.join(markets, ","), params)
-
   def generate_avg(fsym, tsym, markets, params), do: ApiMini.get_body("generateAvg", [fsym: fsym, tsym: tsym, markets: markets] ++ params)
 
 
   @doc """
-  Get day average price. 
-  The values are based on hourly vwap data and the average can be calculated in different waysIt uses BTC conversion 
-  if data is not available because the coin is not trading in the specified currency. 
-  If tryConversion is set to false it will give you the direct data. If no toTS is given it will automatically do the current day. 
-  Also for different timezones use the UTCHourDiff paramThe calculation types are: 
+  Get day average price.
+  The values are based on hourly vwap data and the average can be calculated in different waysIt uses BTC conversion
+  if data is not available because the coin is not trading in the specified currency.
+  If tryConversion is set to false it will give you the direct data. If no toTS is given it will automatically do the current day.
+  Also for different timezones use the UTCHourDiff paramThe calculation types are:
   HourVWAP - a VWAP of the hourly close price,
   MidHighLow - the average between the 24 H high and low.
   VolFVolT - the total volume from / the total volume to (only avilable with tryConversion set to false so only for direct trades but the value should be the most accurate price)
@@ -276,30 +264,31 @@ defmodule CryptoCompare do
    - `UTCHourDiff` - int. Default: `0`
    - `toTs` - timestamp. Hour unit
 
-   ## Example
+  ## Example
 
-   ```elixir
-
-   ```
+  ```elixir
+  iex(1)> CryptoCompare.day_avg("BTC", "ETH")
+  {:ok, %{ConversionType: %{conversionSymbol: "", type: "invert"}, ETH: 13.66}}
+  ```
   """
   @spec day_avg(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
   def day_avg(fsym, tsym, params \\ []), do: ApiMini.get_body("dayAvg", [fsym: fsym, tsym: tsym] ++ params)
 
-  
+
   @doc """
   Get the price of any cryptocurrency in any other currency that you need at a given timestamp.
-  The price comes from the daily info - so it would be the price at the end of the day GMT based on the requested TS. 
-  If the crypto does not trade directly into the toSymbol requested, BTC will be used for conversion. 
-  Tries to get direct trading pair data, if there is none or it is more than 30 days before the ts requested, it uses BTC conversion. 
+  The price comes from the daily info - so it would be the price at the end of the day GMT based on the requested TS.
+  If the crypto does not trade directly into the toSymbol requested, BTC will be used for conversion.
+  Tries to get direct trading pair data, if there is none or it is more than 30 days before the ts requested, it uses BTC conversion.
   If the opposite pair trades we invert it (eg.: BTC-XMR)
 
   **Optional parameters:**
-   - `ts` - Timestamp. 
+   - `ts` - Timestamp.
    - `markets` - String. Name of exchanges, include multiple Default: `CCAGG`
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
-    
+
   ## Example:
 
   ```elixir
@@ -314,7 +303,7 @@ defmodule CryptoCompare do
 
 
   @doc """
-  Get data for a currency pair. 
+  Get data for a currency pair.
   It returns general block explorer information, aggregated data and individual data for each exchange available.
 
   This api is getting abused and will be moved to a min-api path in the near future. Please try not to use it.
@@ -349,8 +338,8 @@ defmodule CryptoCompare do
   def coin_snapshot(fsym, tsym), do: Api.get_body("coinsnapshot", [fsym: fsym, tsym: tsym])
 
   @doc """
-  Get the general, subs (used to connect to the streamer and to figure 
-  out what exchanges we have data for and what are the exact coin pairs of the coin) 
+  Get the general, subs (used to connect to the streamer and to figure
+  out what exchanges we have data for and what are the exact coin pairs of the coin)
   and the aggregated prices for all pairs available.
 
   ## Example:
@@ -484,7 +473,7 @@ defmodule CryptoCompare do
   It uses BTC conversion if data is not available because the coin is not trading in the specified currency
 
   **Optional parameters:**
-   - `toTs` - Timestamp. 
+   - `toTs` - Timestamp.
    - `e` - String. Name of exchange. Default: `CCAGG`
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
@@ -518,7 +507,7 @@ defmodule CryptoCompare do
   It uses BTC conversion if data is not available because the coin is not trading in the specified currency.
 
   **Optional parameters:**
-   - `toTs` - Timestamp. 
+   - `toTs` - Timestamp.
    - `e` - String. Name of exchange. Default: `CCAGG`
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
@@ -552,7 +541,7 @@ defmodule CryptoCompare do
   It uses BTC conversion if data is not available because the coin is not trading in the specified currency.
 
   **Optional parameters:**
-   - `toTs` - Timestamp. 
+   - `toTs` - Timestamp.
    - `e` - String. Name of exchange. Default: `CCAGG`
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
