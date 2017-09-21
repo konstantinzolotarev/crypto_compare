@@ -44,6 +44,7 @@ defmodule CryptoCompare.Util.ApiMini do
   defp fetch_body({:error, err}), do: {:error, err}
   defp fetch_body(_), do: {:error, "Something wrong !"}
 
+  # defp pick_data({:ok, %{Response: "Success", Data: data}}), do: {:ok, data}
   defp pick_data({:ok, %{Response: "Error"} = data}), do: {:error, data}
   defp pick_data(resp), do: resp
 end

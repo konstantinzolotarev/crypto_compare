@@ -3,7 +3,12 @@ defmodule CryptoCompare do
   @moduledoc """
   Provides a basic HTTP interface to allow easy communication with the CryptoCompare API, by wrapping `HTTPoison`
 
-  Example: 
+  ** For now only HTTP REST API is available**.
+  Work on Websocket one is in progress.
+
+  [API Documentation](https://www.cryptocompare.com/api/#-api-data-)
+
+  ## Example: 
 
   ```elixir
   iex(1)> CryptoCompare.coin_list
@@ -24,7 +29,7 @@ defmodule CryptoCompare do
   @doc """
   Get general info for all the coins available on the website.
 
-  Example: 
+  ## Example: 
 
   ```elixir
   iex(1)> CryptoCompare.coin_list
@@ -46,7 +51,7 @@ defmodule CryptoCompare do
   @doc """
   Get the latest price for a list of one or more currencies. Really fast, 20-60 ms. Cached each 10 seconds.
 
-  Example: 
+  ## Example: 
   
   ```elixir
   iex(1)> CryptoCompare.price("ETH", "BTC")
@@ -59,13 +64,13 @@ defmodule CryptoCompare do
   @doc """
   Get the latest price for a list of one or more currencies. Really fast, 20-60 ms. Cached each 10 seconds.
   
-  This function also accept additional parameters: 
+  **Optional parameters:**
    - `e` - String. Name of exchange. Default: CCCAGG
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
   
-  Example: 
+   ## Example: 
 
   ```elixir
   iex(1)> CryptoCompare.price("ETH", ["BTC", "LTC"])
@@ -97,13 +102,13 @@ defmodule CryptoCompare do
   @doc """
   Get a matrix of currency prices. For several symbols.
 
-  Optional parameters: 
+  **Optional parameters:**
    - `e` - String. Name of exchange. Default: CCCAGG
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-  Example: 
+  ## Example: 
 
   ```elixir
   iex(1)> CryptoCompare.pricemulti(["ETH", "DASH"], ["BTC", "USD"])
@@ -126,13 +131,13 @@ defmodule CryptoCompare do
   BTC will be used for conversion. This API also returns Display values for all the fields. 
   If the opposite pair trades we invert it (eg.: BTC-XMR).
 
-  Optional parameters: 
+  **Optional parameters:**
    - `e` - String. Name of exchange. Default: CCCAGG
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-  Example: 
+   ## Example: 
 
   ```elixir
   iex(16)> CryptoCompare.pricemultifull(["ETH", "DASH"], ["BTC", "USD"], [extraParams: "my app"])
@@ -217,12 +222,12 @@ defmodule CryptoCompare do
   @doc """
   Compute the current trading info (price, vol, open, high, low etc) of the requested pair as a volume weighted average based on the markets requested.
 
-  Optional parameters:
+  **Optional parameters:**
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
    - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
 
-  Example: 
+   ## Example: 
 
   ```elixir
   iex(2)> CryptoCompare.generate_avg("BTC", "USD", ["Coinbase", "Bitfinex"])
@@ -262,7 +267,7 @@ defmodule CryptoCompare do
   MidHighLow - the average between the 24 H high and low.
   VolFVolT - the total volume from / the total volume to (only avilable with tryConversion set to false so only for direct trades but the value should be the most accurate price)
 
-  Optional parameters: 
+  **Optional parameters:**
    - `e` - String. Name of exchange. Default: CCCAGG
    - `extraParams` - String. Name of your application
    - `sign` - bool. If set to true, the server will sign the requests.
@@ -288,7 +293,7 @@ defmodule CryptoCompare do
   Tries to get direct trading pair data, if there is none or it is more than 30 days before the ts requested, it uses BTC conversion. 
   If the opposite pair trades we invert it (eg.: BTC-XMR)
 
-  Optional parameters: 
+  **Optional parameters:**
    - `ts` - Timestamp. 
    - `markets` - String. Name of exchanges, include multiple Default: `CCAGG`
    - `extraParams` - String. Name of your application
@@ -473,4 +478,136 @@ defmodule CryptoCompare do
   @spec mining_contracts() :: {:ok, map} | {:error, any}
   def mining_contracts, do: Api.get_body("miningcontracts")
 
+  @doc """
+  Get open, high, low, close, volumefrom and volumeto from the each minute historical data.
+  This data is only stored for 7 days, if you need more,use the hourly or daily path.
+  It uses BTC conversion if data is not available because the coin is not trading in the specified currency
+
+  **Optional parameters:**
+   - `toTs` - Timestamp. 
+   - `e` - String. Name of exchange. Default: `CCAGG`
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+   - `aggregate` - Integer. Default to `1`
+   - `limit` - Integer. Default to `1440`
+
+  ## Example:
+
+  ```elixir
+  iex(3)> CryptoCompare.histo_minute("BTC", "ETH", [limit: 3])
+  {:ok,
+    %{Aggregated: false, ConversionType: %{conversionSymbol: "", type: "invert"},
+      Data: [%{close: 13.6, high: 13.59, low: 13.6, open: 13.6, time: 1505984700,
+        volumefrom: 7.79, volumeto: 106.01},
+             %{close: 13.6, high: 13.59, low: 13.6, open: 13.6, time: 1505984760,
+               volumefrom: 7.15, volumeto: 97.24},
+             %{close: 13.61, high: 13.6, low: 13.61, open: 13.6, time: 1505984820,
+               volumefrom: 18.72, volumeto: 255.08},
+             %{close: 13.61, high: 13.61, low: 13.61, open: 13.61, time: 1505984880,
+               volumefrom: 6.07, volumeto: 82.56}], FirstValueInArray: true,
+      Response: "Success", TimeFrom: 1505984700, TimeTo: 1505984880, Type: 100}}
+  ```
+  """
+  @spec histo_minute(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
+  def histo_minute(fsym, tsym, params \\ []), do: ApiMini.get_body("histominute", [fsym: fsym, tsym: tsym] ++ params)
+
+
+  @doc """
+  Get open, high, low, close, volumefrom and volumeto from the each hour historical data.
+  It uses BTC conversion if data is not available because the coin is not trading in the specified currency.
+
+  **Optional parameters:**
+   - `toTs` - Timestamp. 
+   - `e` - String. Name of exchange. Default: `CCAGG`
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+   - `aggregate` - Integer. Default to `1`
+   - `limit` - Integer. Default to `168`
+
+  ## Example:
+
+  ```elixir
+  iex(5)> CryptoCompare.histo_hour("BTC", "ETH", [limit: 3])
+  {:ok,
+    %{Aggregated: false, ConversionType: %{conversionSymbol: "", type: "invert"},
+      Data: [%{close: 13.7, high: 13.67, low: 13.72, open: 13.7, time: 1505973600,
+        volumefrom: 493.02, volumeto: 6750.16},
+             %{close: 13.63, high: 13.63, low: 13.76, open: 13.7, time: 1505977200,
+               volumefrom: 951.78, volumeto: 13014.42},
+             %{close: 13.6, high: 13.58, low: 13.64, open: 13.63, time: 1505980800,
+               volumefrom: 1000.15, volumeto: 13602.59},
+             %{close: 13.6, high: 13.59, low: 13.61, open: 13.6, time: 1505984400,
+               volumefrom: 171.78, volumeto: 2336}], FirstValueInArray: true,
+      Response: "Success", TimeFrom: 1505973600, TimeTo: 1505984400, Type: 100}}
+  ```
+  """
+  @spec histo_hour(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
+  def histo_hour(fsym, tsym, params \\ []), do: ApiMini.get_body("histohour", [fsym: fsym, tsym: tsym] ++ params)
+
+  @doc """
+  Get open, high, low, close, volumefrom and volumeto daily historical data.
+  The values are based on 00:00 GMT time.
+  It uses BTC conversion if data is not available because the coin is not trading in the specified currency.
+
+  **Optional parameters:**
+   - `toTs` - Timestamp. 
+   - `e` - String. Name of exchange. Default: `CCAGG`
+   - `extraParams` - String. Name of your application
+   - `sign` - bool. If set to true, the server will sign the requests.
+   - `tryConversion` - bool. If set to false, it will try to get values without using any conversion at all. Default: `true`
+   - `aggregate` - Integer. Default to `1`
+   - `limit` - Integer. Default to `30`
+   - `allData` - Boolean. Get all data. Default: `false`
+
+  ## Example:
+
+  ```elixir
+  iex(1)> CryptoCompare.histo_day("BTC", "ETH", [limit: 3])
+  {:ok,
+    %{Aggregated: false, ConversionType: %{conversionSymbol: "", type: "invert"},
+      Data: [%{close: 13.74, high: 13.23, low: 14.31, open: 14.31,
+        time: 1505692800, volumefrom: 34011.1, volumeto: 465408.96},
+             %{close: 13.79, high: 13.67, low: 13.94, open: 13.74, time: 1505779200,
+               volumefrom: 21632, volumeto: 298705.56},
+             %{close: 13.68, high: 13.67, low: 13.85, open: 13.79, time: 1505865600,
+               volumefrom: 16536.62, volumeto: 227858.3},
+             %{close: 13.61, high: 13.59, low: 13.76, open: 13.68, time: 1505952000,
+               volumefrom: 5880.9, volumeto: 80399.15}], FirstValueInArray: true,
+      Response: "Success", TimeFrom: 1505692800, TimeTo: 1505952000, Type: 100}}
+  ```
+  """
+  @spec histo_day(String.t, String.t, [tuple]) :: {:ok, map} | {:error, any}
+  def histo_day(fsym, tsym, params \\ []), do: ApiMini.get_body("histoday", [fsym: fsym, tsym: tsym] ++ params)
+
+  @doc """
+  Get top pairs by volume for a currency (always uses our aggregated data).
+  The number of pairs you get is the minimum of the limit you set (default 5) and the total number of pairs available
+
+  **Optional parameters:**
+   - `tsym` - String. To symbol
+   - `limit` - Integer. Default to `5`
+   - `sign` - Boolean. If set to true, the server will sign the request. Default: `false`
+
+  ## Example:
+
+  ```elixir
+  iex(1)> CryptoCompare.top_pairs("BTC")
+  {:ok,
+    %{Data: [%{exchange: "CCCAGG", fromSymbol: "BTC", toSymbol: "JPY",
+      volume24h: 136451.73538353332, volume24hTo: 59735591768.351654},
+             %{exchange: "CCCAGG", fromSymbol: "BTC", toSymbol: "USD",
+               volume24h: 90057.92590708924, volume24hTo: 353713017.2572782},
+             %{exchange: "CCCAGG", fromSymbol: "BTC", toSymbol: "KRW",
+               volume24h: 14891.462995631156, volume24hTo: 65391518794.84038},
+             %{exchange: "CCCAGG", fromSymbol: "BTC", toSymbol: "CNY",
+               volume24h: 13383.281520579989, volume24hTo: 312930536.6705389},
+             %{exchange: "CCCAGG", fromSymbol: "BTC", toSymbol: "EUR",
+               volume24h: 12987.115042599999, volume24hTo: 43056437.811124615}],
+      Response: "Success"}}
+  ```
+  """
+  @spec top_pairs(String.t, [tuple]) :: {:ok, map} | {:error, any}
+  def top_pairs(fsym, params \\ []), do: ApiMini.get_body("top/pairs", [fsym: fsym] ++ params)
 end
