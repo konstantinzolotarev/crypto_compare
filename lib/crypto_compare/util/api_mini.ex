@@ -18,8 +18,7 @@ defmodule CryptoCompare.Util.ApiMini do
 
   defp process_response_body(""), do: ""
   defp process_response_body(body) do
-    body
-    |> Poison.decode!(keys: :atoms)
+    Poison.decode!(body)
   end
 
   @doc """
